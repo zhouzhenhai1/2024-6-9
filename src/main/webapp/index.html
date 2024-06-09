@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宿舍管理系统</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            font-size: 1.5rem;
+        }
+        .container {
+            display: flex;
+            height: calc(100vh - 60px); /* Adjust based on header height */
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #333;
+            color: white;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .sidebar ul li:hover {
+            background-color: #575757;
+        }
+        .main-content {
+            flex-grow: 1;
+            background-color: #f4f4f4;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+        .hidden {
+            display: none;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.5rem;
+            box-sizing: border-box;
+        }
+        .form-group button {
+            padding: 0.75rem 1.5rem;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .form-group button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    宿舍管理系统
+</div>
+<div class="container">
+    <div class="sidebar">
+        <ul>
+            <li onclick="showPage('home')">首页</li>
+            <li onclick="showPage('registration')">住宿登记</li>
+            <li onclick="showPage('list')">宿舍列表</li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div id="home" class="page">
+            <h2>欢迎使用宿舍管理系统</h2>
+            <p>请选择左侧的菜单进行操作。</p>
+        </div>
+        <div id="registration" class="page hidden">
+            <h2>住宿登记</h2>
+            <form style="width: 50%">
+                <div class="form-group">
+                    <label for="student-name">学生姓名</label>
+                    <input type="text" id="student-name" name="student-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="student-id">学号</label>
+                    <input type="text" id="student-id" name="student-id" required>
+                </div>
+                <div class="form-group">
+                    <label for="gender">性别</label>
+                    <select id="gender" name="gender" required>
+                        <option value="">请选择性别</option>
+                        <option value="male">男</option>
+                        <option value="female">女</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="dorm-building">宿舍楼</label>
+                    <select id="dorm-building" name="dorm-building" required onchange="enableRoomSelect()">
+                        <option value="">请选择宿舍楼</option>
+                        <option value="A">A栋</option>
+                        <option value="B">B栋</option>
+                        <option value="C">C栋</option>
+                        <option value="D">D栋</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="dorm-room">宿舍房间号</label>
+                    <select id="dorm-room" name="dorm-room" disabled required onchange="enableBedSelect()">
+                        <option value="">请选择宿舍房间号</option>
+                        <!-- 动态填充房间号 -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="bed-number">床位号</label>
+                    <select id="bed-number" name="bed-number" disabled required>
+                        <option value="">请选择床位号</option>
+                        <!-- 动态填充床位号 -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" disabled id="submit-button">提交登记</button>
+                </div>
+            </form>
+        </div>
+        <div id="list" class="page hidden">
+            <h2>宿舍列表</h2>
+            <p>这里是宿舍列表页面的内容。</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showPage(pageId) {
+        var pages = document.querySelectorAll('.page');
+        pages.forEach(function(page) {
+            page.classList.add('hidden');
+        });
+        document.getElementById(pageId).classList.remove('hidden');
+    }
+    function enableRoomSelect() {
+        var dormBuilding = document.getElementById('dorm-building').value;
+        var roomSelect = document.getElementById('dorm-room');
+        roomSelect.innerHTML = '<option value="">请选择宿舍房间号</option>'; // Reset options
+
+        if (dormBuilding) {
+            // 假设每栋楼有10个房间
+            for (var i = 1; i <= 10; i++) {
+                var option = document.createElement('option');
+                option.value = i;
+                option.text = i + '号房间';
+                roomSelect.add(option);
+            }
+            roomSelect.disabled = false;
+        } else {
+            roomSelect.disabled = true;
+            document.getElementById('bed-number').disabled = true;
+            document.getElementById('submit-button').disabled = true;
+        }
+    }
+
+    function enableBedSelect() {
+        var roomNumber = document.getElementById('dorm-room').value;
+        var bedSelect = document.getElementById('bed-number');
+        bedSelect.innerHTML = '<option value="">请选择床位号</option>'; // Reset options
+
+        if (roomNumber) {
+            // 假设每个房间有4个床位
+            for (var i = 1; i <= 4; i++) {
+                var option = document.createElement('option');
+                option.value = i;
+                option.text = '床位' + i;
+                bedSelect.add(option);
+            }
+            bedSelect.disabled = false;
+            document.getElementById('submit-button').disabled = false;
+        } else {
+            bedSelect.disabled = true;
+            document.getElementById('submit-button').disabled = true;
+        }
+    }
+</script>
+</body>
+</html>
